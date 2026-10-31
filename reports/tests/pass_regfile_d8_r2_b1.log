@@ -2,6 +2,7 @@ make: Entering directory '/home/aru/Register-Bus/tb'
 rm -f results.xml
 "make" -f Makefile results.xml
 make[1]: Entering directory '/home/aru/Register-Bus/tb'
+/usr/bin/iverilog -o sim_build_regfile_d8_r2_b1/sim.vvp -D COCOTB_SIM=1 -s regfile -g2012 -DP_DEPTH=8 -DP_NREAD=2 -DP_BYPASS=1 -f sim_build_regfile_d8_r2_b1/cmds.f  /home/aru/Register-Bus/tb/../rtl/regfile.v /home/aru/Register-Bus/tb/../rtl/mmio_top.v
 rm -f results.xml
 MODULE=test_regfile TESTCASE= TOPLEVEL=regfile TOPLEVEL_LANG=verilog \
          /usr/bin/vvp -M /usr/local/lib/python3.10/dist-packages/cocotb/libs -m libcocotbvpi_icarus   sim_build_regfile_d8_r2_b1/sim.vvp  
@@ -9,7 +10,7 @@ MODULE=test_regfile TESTCASE= TOPLEVEL=regfile TOPLEVEL_LANG=verilog \
      -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:101  in gpi_print_registered_impl       VPI registered
      0.00ns INFO     cocotb                             Running on Icarus Verilog version 11.0 (stable)
      0.00ns INFO     cocotb                             Running tests with cocotb v1.9.2 from /usr/local/lib/python3.10/dist-packages/cocotb
-     0.00ns INFO     cocotb                             Seeding Python random module with 1793464529
+     0.00ns INFO     cocotb                             Seeding Python random module with 1793465383
      0.00ns INFO     cocotb.regression                  pytest not found, install it to enable better AssertionError messages
      0.00ns INFO     cocotb.regression                  Found test test_regfile.reset_clears_everything
      0.00ns INFO     cocotb.regression                  Found test test_regfile.write_then_read_every_address
@@ -29,13 +30,13 @@ MODULE=test_regfile TESTCASE= TOPLEVEL=regfile TOPLEVEL_LANG=verilog \
  30308.01ns INFO     cocotb.regression                  *********************************************************************************************************
                                                         ** TEST                                             STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
                                                         *********************************************************************************************************
-                                                        ** test_regfile.reset_clears_everything              PASS          13.00           0.00       7433.23  **
-                                                        ** test_regfile.write_then_read_every_address        PASS         183.00           0.00      54502.72  **
-                                                        ** test_regfile.same_cycle_read_of_written_address   PASS          56.00           0.00      46567.25  **
-                                                        ** test_regfile.no_write_when_we_is_low              PASS          46.00           0.00      49701.75  **
-                                                        ** test_regfile.random_traffic                       PASS       30010.00           0.63      47883.26  **
+                                                        ** test_regfile.reset_clears_everything              PASS          13.00           0.00       5397.42  **
+                                                        ** test_regfile.write_then_read_every_address        PASS         183.00           0.00      64555.24  **
+                                                        ** test_regfile.same_cycle_read_of_written_address   PASS          56.00           0.00      43481.16  **
+                                                        ** test_regfile.no_write_when_we_is_low              PASS          46.00           0.00      41708.21  **
+                                                        ** test_regfile.random_traffic                       PASS       30010.00           0.48      62452.93  **
                                                         *********************************************************************************************************
-                                                        ** TESTS=5 PASS=5 FAIL=0 SKIP=0                                 30308.01           0.64      47154.62  **
+                                                        ** TESTS=5 PASS=5 FAIL=0 SKIP=0                                 30308.01           0.50      60881.20  **
                                                         *********************************************************************************************************
                                                         
 make[1]: Leaving directory '/home/aru/Register-Bus/tb'

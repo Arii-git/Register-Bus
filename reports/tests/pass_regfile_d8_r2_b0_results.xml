@@ -1,10 +1,10 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1793464525" />
-    <testcase name="reset_clears_everything" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="48" time="0.0015904903411865234" sim_time_ns="13.001" ratio_time="8174.20870993854" />
-    <testcase name="write_then_read_every_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="55" time="0.0031790733337402344" sim_time_ns="183.001" ratio_time="57564.25875986201" />
-    <testcase name="same_cycle_read_of_written_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="65" time="0.001585245132446289" sim_time_ns="56.000999999999976" ratio_time="35326.39769950367" />
-    <testcase name="no_write_when_we_is_low" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="82" time="0.0009748935699462891" sim_time_ns="46.00100000000003" ratio_time="47185.66356175108" />
-    <testcase name="random_traffic" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="95" time="0.4603114128112793" sim_time_ns="30010.001" ratio_time="65194.99661483224" />
+    <property name="random_seed" value="1793465379" />
+    <testcase name="reset_clears_everything" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="48" time="0.001619577407836914" sim_time_ns="13.001" ratio_time="8027.402665096422" />
+    <testcase name="write_then_read_every_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="55" time="0.003400564193725586" sim_time_ns="183.001" ratio_time="53814.893521979946" />
+    <testcase name="same_cycle_read_of_written_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="65" time="0.001482248306274414" sim_time_ns="56.000999999999976" ratio_time="37781.119238217776" />
+    <testcase name="no_write_when_we_is_low" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="82" time="0.0013179779052734375" sim_time_ns="46.00100000000003" ratio_time="34902.70953400871" />
+    <testcase name="random_traffic" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="95" time="0.48548126220703125" sim_time_ns="30010.001" ratio_time="61814.952164317256" />
   </testsuite>
 </testsuites>

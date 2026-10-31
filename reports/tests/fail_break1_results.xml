@@ -1,14 +1,14 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1793464542" />
-    <testcase name="reset_clears_everything" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="48" time="0.001786947250366211" sim_time_ns="13.001" ratio_time="7275.5365315543695" />
-    <testcase name="write_then_read_every_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="55" time="0.0037403106689453125" sim_time_ns="183.001" ratio_time="48926.684491585926" />
-    <testcase name="same_cycle_read_of_written_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="65" time="0.0018703937530517578" sim_time_ns="56.000999999999976" ratio_time="29940.754404588897" />
-    <testcase name="no_write_when_we_is_low" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="82" time="0.0020904541015625" sim_time_ns="46.00100000000003" ratio_time="22005.266686131403">
-      <failure message="Test failed with RANDOM_SEED=1793464542" />
+    <property name="random_seed" value="1793465387" />
+    <testcase name="reset_clears_everything" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="48" time="0.0015077590942382812" sim_time_ns="13.001" ratio_time="8622.730282099936" />
+    <testcase name="write_then_read_every_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="55" time="0.003121614456176758" sim_time_ns="183.001" ratio_time="58623.83153624074" />
+    <testcase name="same_cycle_read_of_written_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="65" time="0.0013036727905273438" sim_time_ns="56.000999999999976" ratio_time="42956.331072421344" />
+    <testcase name="no_write_when_we_is_low" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="82" time="0.0013952255249023438" sim_time_ns="46.00100000000003" ratio_time="32970.29704442928">
+      <failure message="Test failed with RANDOM_SEED=1793465387" />
     </testcase>
-    <testcase name="random_traffic" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="95" time="0.0018625259399414062" sim_time_ns="46.000999999999976" ratio_time="24698.179506400396">
-      <failure message="Test failed with RANDOM_SEED=1793464542" />
+    <testcase name="random_traffic" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="95" time="0.00154876708984375" sim_time_ns="56.000999999999976" ratio_time="36158.43877832511">
+      <failure message="Test failed with RANDOM_SEED=1793465387" />
     </testcase>
   </testsuite>
 </testsuites>
