@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# rf — run the rf-tools container (ORFS tools + iverilog + cocotb).
+#
+#   rf              interactive shell in the current directory
+#   rf <cmd> [...]  run one command, e.g.  rf make DESIGN_CONFIG=./designs/sky130hd/gcd/config.mk
+#
+# $HOME is mounted at the same path, so paths match host and container.
+# Files are created with your uid/gid. GUIs (openroad -gui, klayout) use WSLg.
+# Env overrides: RF_IMAGE (default rf-tools), RF_DOCKER_ARGS (extra docker run args).
+# Fallback: ~/OpenROAD-flow-scripts/flow/util/docker_shell still works unchanged.
+set -euo pipefail
+
+image="${RF_IMAGE:-rf-tools}"
+cwd="$(pwd -P)"
+
+args=(run --rm --init -i
+      --user "$(id -u):$(id -g)"
+      --hostname rf
+      -v "$HOME:$HOME"
+      -e HOME="$HOME" -e USER="$(id -un)" -e TERM="${TERM:-xterm-256color}"
+      -e ORFS_FLOW="$HOME/OpenROAD-flow-scripts/flow"
+      -e PYTHONNOUSERSITE=1
+      -w "$cwd")
+
+# Interactive TTY only when attached to a terminal.
+[[ -t 0 && -t 1 ]] && args+=(-t)
+
+# Working directory outside $HOME (e.g. /mnt/c/...): mount it too.
+case "$cwd/" in
+  "$HOME"/*) ;;
+  *) args+=(-v "$cwd:$cwd") ;;
+esac
+
+# WSLg display forwarding (X11 + Wayland + audio).
+if [[ -d /mnt/wslg ]]; then
+  args+=(-v /mnt/wslg:/mnt/wslg
+         -v /mnt/wslg/.X11-unix:/tmp/.X11-unix
+         -e DISPLAY="${DISPLAY:-:0}"
+         -e WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
+         -e XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir
+         -e PULSE_SERVER=/mnt/wslg/PulseServer
+         -e QT_X11_NO_MITSHM=1
+         -e LIBGL_ALWAYS_SOFTWARE=1)
+fi
+
+# shellcheck disable=SC2206
+[[ -n "${RF_DOCKER_ARGS:-}" ]] && args+=($RF_DOCKER_ARGS)
+
+if [[ $# -eq 0 ]]; then
+  exec docker "${args[@]}" "$image" bash
+else
+  exec docker "${args[@]}" "$image" "$@"
+fi
