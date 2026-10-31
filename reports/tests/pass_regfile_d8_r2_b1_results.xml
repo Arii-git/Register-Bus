@@ -1,0 +1,10 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1793464529" />
+    <testcase name="reset_clears_everything" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="48" time="0.0017490386962890625" sim_time_ns="13.001" ratio_time="7433.2260501635765" />
+    <testcase name="write_then_read_every_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="55" time="0.0033576488494873047" sim_time_ns="183.001" ratio_time="54502.72145878009" />
+    <testcase name="same_cycle_read_of_written_address" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="65" time="0.0012025833129882812" sim_time_ns="56.000999999999976" ratio_time="46567.251844567785" />
+    <testcase name="no_write_when_we_is_low" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="82" time="0.0009255409240722656" sim_time_ns="46.00100000000003" ratio_time="49701.746085522966" />
+    <testcase name="random_traffic" classname="test_regfile" file="/home/aru/Register-Bus/tb/test_regfile.py" lineno="95" time="0.626732587814331" sim_time_ns="30010.001" ratio_time="47883.26246869811" />
+  </testsuite>
+</testsuites>

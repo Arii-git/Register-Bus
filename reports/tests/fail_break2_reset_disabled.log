@@ -1,0 +1,63 @@
+make: Entering directory '/home/aru/Register-Bus/tb'
+rm -f results.xml
+"make" -f Makefile results.xml
+make[1]: Entering directory '/home/aru/Register-Bus/tb'
+/usr/bin/iverilog -o sim_build_regfile_d8_r2_b0/sim.vvp -D COCOTB_SIM=1 -s regfile -g2012 -DP_DEPTH=8 -DP_NREAD=2 -DP_BYPASS=0 -f sim_build_regfile_d8_r2_b0/cmds.f  /home/aru/Register-Bus/tb/../rtl/regfile.v /home/aru/Register-Bus/tb/../rtl/mmio_top.v
+rm -f results.xml
+MODULE=test_regfile TESTCASE= TOPLEVEL=regfile TOPLEVEL_LANG=verilog \
+         /usr/bin/vvp -M /usr/local/lib/python3.10/dist-packages/cocotb/libs -m libcocotbvpi_icarus   sim_build_regfile_d8_r2_b0/sim.vvp  
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:79   in set_program_name_in_venv        Did not detect Python virtual environment. Using system-wide Python interpreter
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:101  in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 11.0 (stable)
+     0.00ns INFO     cocotb                             Running tests with cocotb v1.9.2 from /usr/local/lib/python3.10/dist-packages/cocotb
+     0.00ns INFO     cocotb                             Seeding Python random module with 1793464546
+     0.00ns INFO     cocotb.regression                  pytest not found, install it to enable better AssertionError messages
+     0.00ns INFO     cocotb.regression                  Found test test_regfile.reset_clears_everything
+     0.00ns INFO     cocotb.regression                  Found test test_regfile.write_then_read_every_address
+     0.00ns INFO     cocotb.regression                  Found test test_regfile.same_cycle_read_of_written_address
+     0.00ns INFO     cocotb.regression                  Found test test_regfile.no_write_when_we_is_low
+     0.00ns INFO     cocotb.regression                  Found test test_regfile.random_traffic
+     0.00ns INFO     cocotb.regression                  running reset_clears_everything (1/5)
+     6.00ns INFO     cocotb.regression                  reset_clears_everything failed
+                                                        Traceback (most recent call last):
+                                                          File "/home/aru/Register-Bus/tb/test_regfile.py", line 52, in reset_clears_everything
+                                                            assert (await read_all(dut, [a] * R)) == [0] * R
+                                                          File "/home/aru/Register-Bus/tb/test_regfile.py", line 44, in read_all
+                                                            v = int(dut.rdata.value)
+                                                          File "/usr/local/lib/python3.10/dist-packages/cocotb/binary.py", line 584, in __int__
+                                                            return self.integer
+                                                          File "/usr/local/lib/python3.10/dist-packages/cocotb/binary.py", line 397, in integer
+                                                            return self._convert_from(self._str)
+                                                          File "/usr/local/lib/python3.10/dist-packages/cocotb/binary.py", line 277, in _convert_from_unsigned
+                                                            return int(x.translate(_resolve_table), 2)
+                                                          File "/usr/local/lib/python3.10/dist-packages/cocotb/binary.py", line 109, in __missing__
+                                                            return self.resolve_x(key)
+                                                          File "/usr/local/lib/python3.10/dist-packages/cocotb/binary.py", line 84, in resolve_error
+                                                            raise ValueError(
+                                                        ValueError: Unresolvable bit in binary string: 'x'. Set the COCOTB_RESOLVE_X environment variable to configure how special values are resolved.
+     6.00ns INFO     cocotb.regression                  running write_then_read_every_address (2/5)
+   179.00ns INFO     cocotb.regression                  write_then_read_every_address passed
+   179.00ns INFO     cocotb.regression                  running same_cycle_read_of_written_address (3/5)
+   235.00ns INFO     cocotb.regression                  same_cycle_read_of_written_address passed
+   235.00ns INFO     cocotb.regression                  running no_write_when_we_is_low (4/5)
+   281.00ns INFO     cocotb.regression                  no_write_when_we_is_low passed
+   281.00ns INFO     cocotb.regression                  running random_traffic (5/5)
+   297.00ns INFO     cocotb.regression                  random_traffic failed
+                                                        Traceback (most recent call last):
+                                                          File "/home/aru/Register-Bus/tb/test_regfile.py", line 112, in random_traffic
+                                                            assert got[p] == exp, f"port {p} addr {a}: got {got[p]:#x} exp {exp:#x}"
+                                                        AssertionError: port 0 addr 6: got 0x94e6 exp 0x0
+   297.00ns INFO     cocotb.regression                  *********************************************************************************************************
+                                                        ** TEST                                             STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *********************************************************************************************************
+                                                        ** test_regfile.reset_clears_everything              FAIL           6.00           0.00       3832.80  **
+                                                        ** test_regfile.write_then_read_every_address        PASS         173.00           0.01      28086.66  **
+                                                        ** test_regfile.same_cycle_read_of_written_address   PASS          56.00           0.00      25820.07  **
+                                                        ** test_regfile.no_write_when_we_is_low              PASS          46.00           0.00      27294.13  **
+                                                        ** test_regfile.random_traffic                       FAIL          16.00           0.00      23706.48  **
+                                                        *********************************************************************************************************
+                                                        ** TESTS=5 PASS=3 FAIL=2 SKIP=0                                   297.00           0.05       5571.09  **
+                                                        *********************************************************************************************************
+                                                        
+make[1]: Leaving directory '/home/aru/Register-Bus/tb'
+make: Leaving directory '/home/aru/Register-Bus/tb'
