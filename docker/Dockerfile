@@ -1,6 +1,6 @@
 # rf-tools: openroad/orfs:latest + iverilog + cocotb, used by ~/bin/rf.
 # Rebuild:  docker build -t rf-tools \
-#             --build-arg USERNAME=$(id -un) --build-arg UID=$(id -u) --build-arg GID=$(id -g) ~/regbus/docker
+#             --build-arg USERNAME=$(id -un) --build-arg UID=$(id -u) --build-arg GID=$(id -g) ~/Register-Bus/docker
 FROM openroad/orfs@sha256:ca289d6df8401711a4ed310a83b5bd14fd42534d64b9b790bf5cbb02cc496278
 
 ARG USERNAME=aru
