@@ -1,0 +1,12 @@
+{
+ "id": "bus_d8_r1",
+ "kind": "bus",
+ "depth": 8,
+ "nread": 1,
+ "bypass": 0,
+ "period_ns": 4.0,
+ "util": 40,
+ "tag": "",
+ "runtime_s": 59.0,
+ "status": "ok"
+}

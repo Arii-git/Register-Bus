@@ -6,3 +6,5 @@ results.xml
 *.fst
 *.gds
 .venv/
+runs/*/make.log
+nohup.out

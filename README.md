@@ -10,7 +10,7 @@ A study that measures the area, timing and power of a parameterised flip-flop re
 ![hdl](https://img.shields.io/badge/HDL-Verilog-lightgrey)
 ![tests](https://img.shields.io/badge/tests-cocotb%20%2B%20Icarus-lightgrey)
 
-> **Status, 3 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. The register file RTL is written and its tests run. The bus wrapper is being written now. No sweep has run yet, so every result cell below says *pending*. Target for v1.0 is 14 Nov 2026.
+> **Status, 3 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. Both designs are written, their tests pass in every setting the sweep will use (24 per design), and mutation checks are done for both. The first two flow runs (8 entries, 1 read port, core and bus) have finished at a placeholder clock period. The sweep has not started, so every result cell below says *pending*. Target for v1.0 is 14 Nov 2026.
 
 **Quick start:** `rf make test` (setup in [Reproduce](#reproduce)).
 
@@ -125,8 +125,8 @@ Testbenches are written in Python with [cocotb](https://www.cocotb.org/) (1.9.x,
 
 | Suite | Tests | What they cover | State |
 | --- | --- | --- | --- |
-| `tb/test_regfile.py` | 5 | Reset, write then read on every address, same-cycle read of the written address, no write when `we` is low, random traffic against the model | Running |
-| `tb/test_mmio.py` | 10 planned, plus 2 of my own | Reset state, DATA read and write, CTRL, unmapped access and `err`, write counter and `CLEAR`, INPUT register, idle bus reads 0, scan ports, scan with bypass, random bus traffic | Not written yet |
+| `tb/test_regfile.py` | 5 | Reset, write then read on every address, same-cycle read of the written address, no write when `we` is low, random traffic against the model | Passing in all 24 settings |
+| `tb/test_mmio.py` | 10 | Reset state, DATA read and write, CTRL, unmapped access and `err`, write counter and `CLEAR`, INPUT register, idle bus reads 0, scan ports, scan with bypass, random bus traffic | Passing in all 24 settings |
 
 `make test-all` runs both designs over 4 sizes × 3 read-port counts × 2 bypass settings, which is 48 configurations.
 
@@ -134,13 +134,13 @@ Testbenches are written in Python with [cocotb](https://www.cocotb.org/) (1.9.x,
 
 | Design | Break | Run with | Caught |
 | --- | --- | --- | --- |
-| regfile | write ignores `we` | any | *pending* |
-| regfile | reset does nothing | any | *pending* |
-| regfile | `BYPASS` ignored | `BYPASS=1` | *pending* |
-| mmio_top | write counter adds 2 | any | *pending* |
-| mmio_top | offset 3 treated as mapped | any | *pending* |
-| mmio_top | scan gate removed | `NREAD ≥ 2` | *pending* |
-| mmio_top | bypass ignored | `BYPASS=1` | *pending* |
+| regfile | write ignores `we` | any | Yes, `log/mutations.md` |
+| regfile | reset does nothing | any | Yes, `log/mutations.md` |
+| regfile | `BYPASS` ignored | `BYPASS=1` | Yes, `log/mutations.md` |
+| mmio_top | write counter adds 2 | any | Yes, `log/mutations_bus.md` |
+| mmio_top | offset 3 treated as mapped | any | Yes, `log/mutations_bus.md` |
+| mmio_top | scan gate removed | `NREAD ≥ 2` | Yes, `log/mutations_bus.md` |
+| mmio_top | bypass ignored | `BYPASS=1` | Yes, `log/mutations_bus.md` |
 
 ---
 
@@ -391,10 +391,10 @@ Register-Bus/
 | Toolchain in a pinned Docker image, example design (gcd) taken to GDS | Done |
 | Metric key names checked on the example design | Done |
 | `regfile.v` written | Done |
-| `regfile` tests | Running, mutation checks pending |
-| `mmio_top.v` | In progress |
-| `mmio_top` tests | Not started |
-| First flow runs, clock period chosen from probes | Not started |
+| `regfile` tests | Done, passing in all 24 settings, mutation checks done |
+| `mmio_top.v` | Done |
+| `mmio_top` tests | Done, passing in all 24 settings, mutation checks done |
+| First flow runs, clock period chosen from probes | Two runs done at a placeholder period, period not chosen yet |
 | 24-point sweep collected into one CSV | Not started |
 | Cost model fitted and tested on 4 held-back runs | Not started |
 | 6 plots and 2 layout screenshots from my own data | Not started |
