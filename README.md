@@ -1,4 +1,4 @@
-> **Status, 5 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. Both designs are written and their tests pass in every setting the sweep uses (24 per design), with mutation checks done for both. Two flow runs (8 entries, 1 read port, core and bus) have finished at a placeholder clock period. The sweep is partly collected in `results/sweep.csv`, and the full 24-point sweep and the clock period decision are still pending, so the result cells below say *pending*. Target for v1.0 is 14 Nov 2026.# Register-Bus
+# Register-Bus
 
 **What does a memory-mapped bus interface cost a small register file?**
 
@@ -10,7 +10,7 @@ A study that measures the area, timing and power of a parameterised flip-flop re
 ![hdl](https://img.shields.io/badge/HDL-Verilog-lightgrey)
 ![tests](https://img.shields.io/badge/tests-cocotb%20%2B%20Icarus-lightgrey)
 
-> **Status, 5 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. Both designs are written and their tests pass in every setting the sweep uses (24 per design), with mutation checks done for both. Two flow runs (8 entries, 1 read port, core and bus) have finished at a placeholder clock period. The sweep is partly collected in `results/sweep.csv`, and the full 24-point sweep and the clock period decision are still pending, so the result cells below say *pending*. Target for v1.0 is 14 Nov 2026.
+> **Status, 5 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. The register file RTL is written and its tests run. The bus wrapper is written and its tests run. For the 8 × 1 core and bus designs, DRC is clean (0 violations), LVS netlists match, and detailed routing ends with 0 violations; the layout screenshots are in `docs/layouts/`. The 24-point sweep has not started, because the clock period is still open. Target for v1.0 is 14 Nov 2026.
 
 **Quick start:** `rf make test` (setup in [Reproduce](#reproduce)).
 
@@ -125,8 +125,8 @@ Testbenches are written in Python with [cocotb](https://www.cocotb.org/) (1.9.x,
 
 | Suite | Tests | What they cover | State |
 | --- | --- | --- | --- |
-| `tb/test_regfile.py` | 5 | Reset, write then read on every address, same-cycle read of the written address, no write when `we` is low, random traffic against the model | Passing in all 24 settings |
-| `tb/test_mmio.py` | 10 | Reset state, DATA read and write, CTRL, unmapped access and `err`, write counter and `CLEAR`, INPUT register, idle bus reads 0, scan ports, scan with bypass, random bus traffic | Passing in all 24 settings |
+| `tb/test_regfile.py` | 5 | Reset, write then read on every address, same-cycle read of the written address, no write when `we` is low, random traffic against the model | Running |
+| `tb/test_mmio.py` | 10 planned, plus 2 of my own | Reset state, DATA read and write, CTRL, unmapped access and `err`, write counter and `CLEAR`, INPUT register, idle bus reads 0, scan ports, scan with bypass, random bus traffic | 10 of 10 passing on the bus design |
 
 `make test-all` runs both designs over 4 sizes × 3 read-port counts × 2 bypass settings, which is 48 configurations.
 
@@ -134,13 +134,13 @@ Testbenches are written in Python with [cocotb](https://www.cocotb.org/) (1.9.x,
 
 | Design | Break | Run with | Caught |
 | --- | --- | --- | --- |
-| regfile | write ignores `we` | any | Yes, `log/mutations.md` |
-| regfile | reset does nothing | any | Yes, `log/mutations.md` |
-| regfile | `BYPASS` ignored | `BYPASS=1` | Yes, `log/mutations.md` |
-| mmio_top | write counter adds 2 | any | Yes, `log/mutations_bus.md` |
-| mmio_top | offset 3 treated as mapped | any | Yes, `log/mutations_bus.md` |
-| mmio_top | scan gate removed | `NREAD ≥ 2` | Yes, `log/mutations_bus.md` |
-| mmio_top | bypass ignored | `BYPASS=1` | Yes, `log/mutations_bus.md` |
+| regfile | write ignores `we` | any | *pending* |
+| regfile | reset does nothing | any | *pending* |
+| regfile | `BYPASS` ignored | `BYPASS=1` | *pending* |
+| mmio_top | write counter adds 2 | any | *pending* |
+| mmio_top | offset 3 treated as mapped | any | *pending* |
+| mmio_top | scan gate removed | `NREAD ≥ 2` | *pending* |
+| mmio_top | bypass ignored | `BYPASS=1` | *pending* |
 
 ---
 
@@ -165,7 +165,7 @@ That gives 24 grid runs. Four more runs are held back to test the cost model: 16
 | Platform | sky130hd, the platform's default corner (to be named from the platform config before v1.0) |
 | `CORE_UTILIZATION` | 40 |
 | `PLACE_DENSITY_LB_ADDON` | 0.20 |
-| Clock period | One target for the whole sweep, chosen from probe runs and recorded with its evidence in `log/period.md` |
+| Clock period | One target for the whole sweep, chosen from probe runs and recorded with its evidence in `log/period.md`. Still open: 4.5 ns is recommended but not yet verified |
 | Input and output delay | 20% of the period each, so the combinational bus read path is a timed path |
 | Tools | One Docker image, versions in [Reproduce](#reproduce) |
 
@@ -173,7 +173,7 @@ That gives 24 grid runs. Four more runs are held back to test the cost model: 16
 
 | Metric | Definition | Source | Caveat |
 | --- | --- | --- | --- |
-| `area_um2` | Instance area at the end of the flow | `finish__design__instance__area` in `6_report.json` | Includes buffers added by clock tree synthesis and timing repair, so it depends on the target period. Includes tap cells. Excludes fill cells. |
+| `area_um2` | Instance area at the end of the flow | `finish__design__instance__area` in `6_report.json` | Includes buffers added by clock tree synthesis and timing repair, so it depends on the target period. Whether tap and fill cells are counted is checked before v1.0 |
 | `wns_ns` | Signed worst setup slack at the end of the flow | `finish__timing__setup__ws` | Can be positive. Negative means the target period is missed |
 | `period_est_ns` | Target period minus `wns_ns` | derived | For comparing designs only. See the note below |
 | `power_mw` | Total power × 1000 | `finish__power__total` | Default switching activity, so use it to rank designs only |
@@ -240,6 +240,17 @@ This section is filled only from `results/sweep.csv` and `results/summary.md` on
 
 *pending:* worst path at bus 8×1, 64×1 and 64×4 (start point, end point, slack, cell types on the path), GUI screenshots, verdict on H3.
 
+### Physical checks and layouts (8 × 1)
+
+Core and bus at depth 8, one read port, from the OpenROAD flow:
+
+- Detailed routing: 0 violations for core and bus.
+- DRC (KLayout, sky130hd deck): 0 violations for core and bus.
+- LVS (KLayout, sky130hd deck): netlists match for core and bus.
+- Layout screenshots: `docs/layouts/core_8x1_layout.png` and `docs/layouts/bus_8x1_layout.png`.
+
+The DRC and LVS checks are recorded in `docs/flow-notes.md`. Other sweep points will get the same checks as their runs finish.
+
 ### Plots
 
 | # | File | Shows |
@@ -272,10 +283,9 @@ Written before the results and kept up to date as runs finish.
 - **`period_est_ns` is an estimate.** See the note under [Method](#method).
 - **Fixed utilisation.** The die is sized from post-synthesis cell area at a fixed 40% utilisation.
 - **One tool version.** The results compare designs against each other under one flow setting.
-- **No signoff and no tapeout.** DRC and LVS status will be reported exactly as the flow reports it, or as "not run". Nothing here has been fabricated.
-- **Clock period not chosen.** Flow runs so far use a placeholder period. The choice waits on the 2.5 ns and 6.0 ns probes.
-- **Timing misses at 32 × 4.** Both designs at 32 entries and 4 read ports have negative slack at the 4.0 ns target (core -0.09 ns, bus -0.05 ns).
-- **Failed or odd runs:** none yet. Each one is listed here as it happens.
+- **Physical checks so far cover 8 × 1 only.** DRC and LVS are clean for core and bus at depth 8, one read port. Other sweep points have not been checked yet, and the text will say so if any fail.
+- **No signoff and no tapeout.** Nothing here has been fabricated.
+- **Failed or odd runs:** a 64 × 4 run was lost once to two sweeps writing the same run folder and was rerun with `--force` (bus_d64_r4_p4 then finished in 11.1 min). Each one is listed here as it happens.
 
 ---
 
@@ -376,9 +386,9 @@ Register-Bus/
   rtl/        regfile.v, mmio_top.v
   tb/         Makefile, test_regfile.py, test_mmio.py
   scripts/    sweep.py, parse.py, keys.py, analyse.py
-  runs/       one folder per sweep point: config.mk, make.log, copied reports
+  runs/       one folder per sweep point: config.mk and copied reports (make.log stays local)
   results/    sweep.csv, summary.md, plots/
-  docs/       spec, block diagram, flow notes, critical paths, screenshots
+  docs/       spec, block diagram, flow notes, critical paths, layouts/, screenshots
   log/        daily logs, versions.md, keys.md, hypotheses.md, predictions.md, period.md
   docker/     Dockerfile and the rf wrapper
   Makefile    test, test-all, sweep, parse, analyse
@@ -393,14 +403,15 @@ Register-Bus/
 | Toolchain in a pinned Docker image, example design (gcd) taken to GDS | Done |
 | Metric key names checked on the example design | Done |
 | `regfile.v` written | Done |
-| `regfile` tests | Done, passing in all 24 settings, mutation checks done |
+| `regfile` tests | Running, mutation checks pending |
 | `mmio_top.v` | Done |
-| `mmio_top` tests | Done, passing in all 24 settings, mutation checks done |
-| Waveform screenshots (write/read, error, scan ports) | Done |
-| First flow runs at a placeholder period | Done for 8 entries, 1 read port (core and bus); clock period not chosen yet |
-| Sweep collected into one CSV | Partly done; full 24-point sweep still to run |
-| Cost model fitted and tested on held-back runs | Partly done; validation errors 0.5% to 5.1% |
-| 6 plots with captions | Done |
+| `mmio_top` tests | 10 of 10 passing on the bus design; mutation checks pending |
+| DRC and LVS for 8 × 1 core and bus | Done (DRC 0 violations, LVS match) |
+| Layout screenshots for 8 × 1 core and bus | Done (`docs/layouts/`) |
+| Clock period chosen from probes | Open (4.5 ns recommended, not verified) |
+| 24-point sweep collected into one CSV | Not started |
+| Cost model fitted and tested on 4 held-back runs | Not started |
+| 6 plots from my own data | Plot 6 done; plots 1 to 5 wait on the sweep |
 | Report (4 to 6 pages) | Not started |
 
 **After the core work, in order:** the cost of the same-cycle bypass, a registered read output, a second platform (nangate45), one formal property with SymbiYosys, and GitHub Actions running the tests on every push.
