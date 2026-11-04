@@ -35,7 +35,7 @@ Validation error = (predicted - measured) / measured.
 - H2 (overhead % falls, absolute stays flat): percentage part supported at every port count. Absolute part disproved: overhead grows from about 2,000 to 4,300 um2. The 64 x 4 prediction of under 4% was missed (4.7%).
 - H3 (worst path addr to rdata): supported at 8 x 1 and 64 x 4. Both have addr[0] to rdata as the worst path.
 - H4 (power ranks like area, Spearman at least 0.95): supported. Spearman 0.998.
-- H5 (bandwidth per area falls from 1 to 4 ports): disproved for the direction. It rises at every depth. The ratio is 2.5 to 2.8, not the 1.5 to 2.5 I predicted.
+- H5 (bandwidth per area at 4 ports is 1.5 to 2.5 times that at 1 port): direction supported, size missed. It rises at every depth, by 2.5 to 2.8 times.
 
 ## Timing at 4.0 ns (final WNS)
 - core 8 x 1: +0.57 ns. bus 8 x 1: +0.03 ns.
