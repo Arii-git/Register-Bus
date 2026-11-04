@@ -72,3 +72,45 @@ Run folders: runs/core_d8_r1_p25, runs/bus_d8_r1_p25, runs/core_d8_r1_p60, runs/
 The 2.5 ns and 6.0 ns results do not give the same design's maximum speed. A tighter target makes the flow add timing-repair buffers and choose faster cells, while a looser target lets it relax the design. So the two values are not one speed curve, and they should not be read as the maximum frequency of the design.
 
 At 4.0 ns, the 8 x 1 designs met timing. The larger designs missed it: 32 x 4 by about 0.05 to 0.09 ns, and 64 x 4 by about 0.24 ns. The clock period decision is still open.
+
+## Results so far
+
+sweep.csv has 22 rows, all at period target 4.0 ns.
+
+| id | period target (ns) | setup WNS (ns) | area (um^2) | power (mW) |
+| --- | --- | --- | --- | --- |
+| bus_d8_r1 | 4.0 | +0.031 | 9390.3 | 3.86 |
+| bus_d8_r2 | 4.0 | -0.066 | 10540.1 | 4.03 |
+| bus_d8_r4 | 4.0 | +0.018 | 13221.4 | 4.45 |
+| bus_d16_r1 | 4.0 | +0.176 | 15940.3 | 7.03 |
+| bus_d16_r2 | 4.0 | +0.117 | 18203.7 | 7.27 |
+| bus_d16_r3 | 4.0 | +0.058 | 20738.6 | 7.77 |
+| bus_d16_r4 | 4.0 | +0.040 | 23418.7 | 8.09 |
+| bus_d32_r1 | 4.0 | -0.028 | 31870.6 | 13.17 |
+| bus_d32_r2 | 4.0 | -0.020 | 37244.5 | 14.67 |
+| bus_d32_r4 | 4.0 | -0.048 | 48172.5 | 16.80 |
+| bus_d128_r2 | 4.0 | -0.782 | 144161.0 | 57.20 |
+| core_d8_r1 | 4.0 | +0.575 | 7104.3 | 3.23 |
+| core_d8_r2 | 4.0 | +0.538 | 8483.1 | 3.68 |
+| core_d8_r4 | 4.0 | +0.565 | 10894.2 | 3.98 |
+| core_d16_r1 | 4.0 | +0.108 | 13256.5 | 5.77 |
+| core_d16_r2 | 4.0 | +0.079 | 15851.5 | 6.62 |
+| core_d16_r3 | 4.0 | +0.024 | 18053.6 | 6.92 |
+| core_d16_r4 | 4.0 | +0.023 | 20443.4 | 7.51 |
+| core_d32_r1 | 4.0 | -0.027 | 27827.9 | 12.21 |
+| core_d32_r2 | 4.0 | -0.038 | 34376.7 | 13.70 |
+| core_d32_r4 | 4.0 | -0.094 | 43900.9 | 15.46 |
+| core_d128_r2 | 4.0 | -0.649 | 130837.0 | 54.77 |
+
+Other runs in runs/, not in sweep.csv:
+
+- bus_d64_r4_p4: target 4.0 ns, status ok
+- bus_d8_r1_p25: target 2.5 ns, status ok
+- bus_d8_r1_p60: target 6.0 ns, status ok
+- core_d64_r4_p4: target 4.0 ns, status ok
+- core_d8_r1_p25: target 2.5 ns, status ok
+- core_d8_r1_p60: target 6.0 ns, status ok
+
+## Changing the clock period later
+
+The full 24-point sweep has not started, so the period can still be chosen. A different period needs a full sweep at that period, which takes 10 to 12 hours. The 4.0 ns rows above stay as a record and must not be mixed with new-period rows in the report. sweep.py skips points that already have results, so a new-period run needs --force or a new tag.
