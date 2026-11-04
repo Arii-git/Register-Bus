@@ -51,7 +51,7 @@ Negative slack on the largest points means the period has to be chosen with thos
 - 
 1. **1_area_vs_entries.png:** Cell area grows with depth and read ports, from about 7,000 µm² at 8 × 1 to about 44,000 µm² at 32 × 4 for the core. The bus interface adds area at every point, with the largest gap at 32 entries.
 
-2. **2_period_vs_entries.png:** The core's achievable period rises with depth, from about 3.43 ns at 8 entries to about 4.09 ns at 32 × 4. With the bus, the period dips at 16 entries and recovers at 32.
+2. **2_period_vs_entries.png:** The core's achievable period rises with depth, from about 3.43 ns at 8 entries to about 4.09 ns at 32 × 4. With the bus, the period dips at 16 entries and recovers at 32 × 4 to about 4.05 ns. Both 32 × 4 points are above the 4.0 ns target, so neither meets timing there.
 
 3. **3_power_vs_entries.png:** Total power rises with depth and read ports, reaching about 15.5 mW for the core and about 16.5 mW for the bus at 32 × 4. The bus adds little power at 8 entries and more at 32.
 
