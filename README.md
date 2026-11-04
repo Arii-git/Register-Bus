@@ -1,4 +1,4 @@
-# Register-Bus
+> **Status, 5 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. Both designs are written and their tests pass in every setting the sweep uses (24 per design), with mutation checks done for both. Two flow runs (8 entries, 1 read port, core and bus) have finished at a placeholder clock period. The sweep is partly collected in `results/sweep.csv`, and the full 24-point sweep and the clock period decision are still pending, so the result cells below say *pending*. Target for v1.0 is 14 Nov 2026.# Register-Bus
 
 **What does a memory-mapped bus interface cost a small register file?**
 
@@ -10,7 +10,7 @@ A study that measures the area, timing and power of a parameterised flip-flop re
 ![hdl](https://img.shields.io/badge/HDL-Verilog-lightgrey)
 ![tests](https://img.shields.io/badge/tests-cocotb%20%2B%20Icarus-lightgrey)
 
-> **Status, 3 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. Both designs are written, their tests pass in every setting the sweep will use (24 per design), and mutation checks are done for both. The first two flow runs (8 entries, 1 read port, core and bus) have finished at a placeholder clock period. The sweep has not started, so every result cell below says *pending*. Target for v1.0 is 14 Nov 2026.
+> **Status, 5 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. Both designs are written and their tests pass in every setting the sweep uses (24 per design), with mutation checks done for both. Two flow runs (8 entries, 1 read port, core and bus) have finished at a placeholder clock period. The sweep is partly collected in `results/sweep.csv`, and the full 24-point sweep and the clock period decision are still pending, so the result cells below say *pending*. Target for v1.0 is 14 Nov 2026.
 
 **Quick start:** `rf make test` (setup in [Reproduce](#reproduce)).
 
@@ -173,7 +173,7 @@ That gives 24 grid runs. Four more runs are held back to test the cost model: 16
 
 | Metric | Definition | Source | Caveat |
 | --- | --- | --- | --- |
-| `area_um2` | Instance area at the end of the flow | `finish__design__instance__area` in `6_report.json` | Includes buffers added by clock tree synthesis and timing repair, so it depends on the target period. Whether tap and fill cells are counted is checked before v1.0 |
+| `area_um2` | Instance area at the end of the flow | `finish__design__instance__area` in `6_report.json` | Includes buffers added by clock tree synthesis and timing repair, so it depends on the target period. Includes tap cells. Excludes fill cells. |
 | `wns_ns` | Signed worst setup slack at the end of the flow | `finish__timing__setup__ws` | Can be positive. Negative means the target period is missed |
 | `period_est_ns` | Target period minus `wns_ns` | derived | For comparing designs only. See the note below |
 | `power_mw` | Total power × 1000 | `finish__power__total` | Default switching activity, so use it to rank designs only |
@@ -273,6 +273,8 @@ Written before the results and kept up to date as runs finish.
 - **Fixed utilisation.** The die is sized from post-synthesis cell area at a fixed 40% utilisation.
 - **One tool version.** The results compare designs against each other under one flow setting.
 - **No signoff and no tapeout.** DRC and LVS status will be reported exactly as the flow reports it, or as "not run". Nothing here has been fabricated.
+- **Clock period not chosen.** Flow runs so far use a placeholder period. The choice waits on the 2.5 ns and 6.0 ns probes.
+- **Plot 6 has two depths.** The cell breakdown shows 8 × 4 and 32 × 4 only, until the 64 × 4 bar is added.
 - **Failed or odd runs:** none yet. Each one is listed here as it happens.
 
 ---
@@ -394,10 +396,11 @@ Register-Bus/
 | `regfile` tests | Done, passing in all 24 settings, mutation checks done |
 | `mmio_top.v` | Done |
 | `mmio_top` tests | Done, passing in all 24 settings, mutation checks done |
-| First flow runs, clock period chosen from probes | Two runs done at a placeholder period, period not chosen yet |
-| 24-point sweep collected into one CSV | Not started |
-| Cost model fitted and tested on 4 held-back runs | Not started |
-| 6 plots and 2 layout screenshots from my own data | Not started |
+| Waveform screenshots (write/read, error, scan ports) | Done |
+| First flow runs at a placeholder period | Done for 8 entries, 1 read port (core and bus); clock period not chosen yet |
+| Sweep collected into one CSV | Partly done; full 24-point sweep still to run |
+| Cost model fitted and tested on held-back runs | Partly done; validation errors 0.5% to 5.1% |
+| 6 plots with captions | Done; plot 6 needs the 64 × 4 bar |
 | Report (4 to 6 pages) | Not started |
 
 **After the core work, in order:** the cost of the same-cycle bypass, a registered read output, a second platform (nangate45), one formal property with SymbiYosys, and GitHub Actions running the tests on every push.
