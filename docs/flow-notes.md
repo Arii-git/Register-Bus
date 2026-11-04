@@ -42,3 +42,18 @@ Both designs miss the 4.0 ns target by about 0.24 ns.
 - Largest relative residual over the 12 grid points: 7.0%, below the 10% threshold in H1.
 - Power against area, Spearman rank correlation: 0.998, above the 0.9 threshold in H4.
 - Bandwidth per unit area at 4 read ports is 2.5 to 2.8 times the 1-port value.
+
+## Clock period probes (8 x 1, tags _p25 and _p60)
+
+Run folders: runs/core_d8_r1_p25, runs/bus_d8_r1_p25, runs/core_d8_r1_p60, runs/bus_d8_r1_p60. All four finished with status ok. One run per point.
+
+| Design | Target (ns) | Setup WNS (ns) | Meets target | Target minus WNS (ns) |
+| --- | --- | --- | --- | --- |
+| core | 2.5 | +0.005 | yes, barely | 2.495 |
+| bus | 2.5 | +0.019 | yes, barely | 2.481 |
+| core | 6.0 | +1.479 | yes | 4.521 |
+| bus | 6.0 | +0.789 | yes | 5.211 |
+
+The 2.5 ns and 6.0 ns results do not give the same design's maximum speed. A tighter target makes the flow add timing-repair buffers and choose faster cells, while a looser target lets it relax the design. So the two values are not one speed curve, and they should not be read as the maximum frequency of the design.
+
+At 4.0 ns, the 8 x 1 designs met timing. The larger designs missed it: 32 x 4 by about 0.05 to 0.09 ns, and 64 x 4 by about 0.24 ns. The clock period decision is still open.
