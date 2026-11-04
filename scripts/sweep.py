@@ -70,8 +70,6 @@ def write_inputs(kind, d, r, b, period):
         f"export PLACE_DENSITY_LB_ADDON = 0.20\n"
         f"export TNS_END_PERCENT = 100\n"
     )
-    (rdir / "meta.json").write_text(json.dumps(
-        dict(id=rid, kind=kind, depth=d, nread=r, bypass=b, period_ns=period, util=UTIL, tag=TAG), indent=1))
     return rid, rdir, cfg
 
 
@@ -80,7 +78,18 @@ def done(rid):
 
 
 def run_one(args, kind, d, r, b):
+    rid = run_id(kind, d, r, b)
+    rdir = REPO / "runs" / rid
+    cfg = rdir / "config.mk"
+    if args.dry:
+        print("DRY", rid)
+        return rid, "dry", 0.0
+    if done(rid) and not args.force:
+        print("SKIP", rid, "(already finished)")
+        return rid, "skipped", 0.0
     rid, rdir, cfg = write_inputs(kind, d, r, b, args.period)
+    (rdir / "meta.json").write_text(json.dumps(
+        dict(id=rid, kind=kind, depth=d, nread=r, bypass=b, period_ns=args.period, util=UTIL, tag=TAG), indent=1))
     cmd = ["make", "-C", str(FLOW), f"DESIGN_CONFIG={cfg}"]
     if args.dry:
         print("DRY", rid, " ".join(cmd))
