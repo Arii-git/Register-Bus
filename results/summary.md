@@ -1,7 +1,11 @@
 ## Area cost model: area = c0 + c1*entries + c2*(read ports * entries)
 
 - core: c0=-598, c1=739.72, c2=161.36 um^2, R^2=0.9971, max residual 7.0%
+  - never-seen point 16 entries x 3 ports: predicted 18982, measured 18054, error +5.1%
+  - never-seen point 128 entries x 2 ports: predicted 135393, measured 130837, error +3.5%
 - bus: c0=1096, c1=789.68, c2=167.01 um^2, R^2=0.9979, max residual 6.8%
+  - never-seen point 16 entries x 3 ports: predicted 21748, measured 20739, error +4.9%
+  - never-seen point 128 entries x 2 ports: predicted 144930, measured 144161, error +0.5%
 
 ## Interface overhead (bus minus core), area
 

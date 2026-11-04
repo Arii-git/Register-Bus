@@ -1,0 +1,12 @@
+{
+ "id": "core_d16_r3",
+ "kind": "core",
+ "depth": 16,
+ "nread": 3,
+ "bypass": 0,
+ "period_ns": 4.0,
+ "util": 40,
+ "tag": "",
+ "runtime_s": 86.6,
+ "status": "ok"
+}

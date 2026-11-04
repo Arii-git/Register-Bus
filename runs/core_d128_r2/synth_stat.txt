@@ -1,0 +1,40 @@
+
+21. Printing statistics.
+
+=== regfile ===
+
+        +----------------------------Count including submodules.
+        |        +-------------------Area including submodules.
+        |        |        +----------Local count, excluding submodules.
+        |        |        |        +-Local area, excluding submodules.
+        |        |        |        | 
+     6414        -     6414        - wires
+     6479        -     6479        - wire bits
+     2055        -     2055        - public wires
+     2120        -     2120        - public wire bits
+        7        -        7        - ports
+       72        -       72        - port bits
+        -        -        -        - memories
+        -        -        -        - memory bits
+        -        -        -        - processes
+     6439 1.09E+05     6439 1.09E+05 cells
+     2048 1.28E+04     2048 1.28E+04   sky130_fd_sc_hd__and2_1
+        2   17.517        2   17.517   sky130_fd_sc_hd__and3b_1
+       41  153.898       41  153.898   sky130_fd_sc_hd__buf_1
+      101  505.485      101  505.485   sky130_fd_sc_hd__buf_2
+        7   78.826        7   78.826   sky130_fd_sc_hd__buf_6
+      527 1.98E+03      527 1.98E+03   sky130_fd_sc_hd__clkbuf_1
+     2048 6.15E+04     2048 6.15E+04   sky130_fd_sc_hd__edfxtp_1
+       32  360.346       32  360.346   sky130_fd_sc_hd__mux2_2
+     1344 3.03E+04     1344 3.03E+04   sky130_fd_sc_hd__mux4_2
+       15   56.304       15   56.304   sky130_fd_sc_hd__nand2_1
+        6   30.029        6   30.029   sky130_fd_sc_hd__nand3_1
+        3   18.768        3   18.768   sky130_fd_sc_hd__nand4_1
+      131  491.722      131  491.722   sky130_fd_sc_hd__nor2_1
+        5    31.28        5    31.28   sky130_fd_sc_hd__nor2b_1
+        1    7.507        1    7.507   sky130_fd_sc_hd__nor3b_1
+      128  800.768      128  800.768   sky130_fd_sc_hd__or2_2
+
+   Chip area for module '\regfile': 109110.896000
+     of which used for sequential elements: 61498.982400 (56.36%)
+
