@@ -22,3 +22,23 @@
 - Tap cells are included: 230.2 um2.
 - Fill cells are not included. The fill class is 7429.6 um2 and fills the core (14533.9 um2). It is excluded from the reported area.
 - Other classes in the reported total: sequential 3843.7, multi-input combinational 1863.0, clock buffers 436.7, timing repair buffers 598.1, inverters 60.1, clock inverters 72.6.
+
+## 64 x 4 probe (tag _p4, 4.0 ns target)
+
+Run folders: runs/core_d64_r4_p4 and runs/bus_d64_r4_p4. Not in results/sweep.csv.
+Area excludes fill cells, and includes tap cells, as defined in the README.
+
+| Design | Area excl. fill (um^2) | Fill (um^2) | Total incl. fill (um^2) | WNS (ns) | Achievable period (ns) | Power (mW) | Runtime (min) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| core | 93253.2 | 83631.5 | 176885 | -0.240 | 4.240 | 33.2 | 9.8 |
+| bus | 97678.7 | 80936.4 | 178615 | -0.242 | 4.242 | 34.1 | 11.1 |
+
+Bus overhead at 64 x 4: +4425 um^2, +4.7% of core (excluding fill).
+Both designs miss the 4.0 ns target by about 0.24 ns.
+
+## Validation and checks (4 Nov 2026)
+
+- Cost model validation errors on the held-back configurations: 0.5% to 5.1%.
+- Largest relative residual over the 12 grid points: 7.0%, below the 10% threshold in H1.
+- Power against area, Spearman rank correlation: 0.998, above the 0.9 threshold in H4.
+- Bandwidth per unit area at 4 read ports is 2.5 to 2.8 times the 1-port value.
