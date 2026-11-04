@@ -125,22 +125,22 @@ Testbenches are written in Python with [cocotb](https://www.cocotb.org/) (1.9.x,
 
 | Suite | Tests | What they cover | State |
 | --- | --- | --- | --- |
-| `tb/test_regfile.py` | 5 | Reset, write then read on every address, same-cycle read of the written address, no write when `we` is low, random traffic against the model | Running |
+| `tb/test_regfile.py` | 5 | Reset, write then read on every address, same-cycle read of the written address, no write when `we` is low, random traffic against the model | Passing at depth 8; 3 of 3 mutations caught |
 | `tb/test_mmio.py` | 10 planned, plus 2 of my own | Reset state, DATA read and write, CTRL, unmapped access and `err`, write counter and `CLEAR`, INPUT register, idle bus reads 0, scan ports, scan with bypass, random bus traffic | 10 of 10 passing on the bus design |
 
 `make test-all` runs both designs over 4 sizes × 3 read-port counts × 2 bypass settings, which is 48 configurations.
 
-**Mutation checks.** Each suite will be run against deliberately broken RTL, one break at a time, and at least one test must fail for each break. Some breaks can only be seen in some configurations, so the table says where each one is run.
+**Mutation checks.** Each suite was run against deliberately broken RTL, one break at a time. At least one test must fail for each break, and all seven breaks were caught. Some breaks can only be seen in some configurations, so the table says where each one is run.
 
 | Design | Break | Run with | Caught |
 | --- | --- | --- | --- |
-| regfile | write ignores `we` | any | *pending* |
-| regfile | reset does nothing | any | *pending* |
-| regfile | `BYPASS` ignored | `BYPASS=1` | *pending* |
-| mmio_top | write counter adds 2 | any | *pending* |
-| mmio_top | offset 3 treated as mapped | any | *pending* |
-| mmio_top | scan gate removed | `NREAD ≥ 2` | *pending* |
-| mmio_top | bypass ignored | `BYPASS=1` | *pending* |
+| regfile | write ignores `we` | not recorded in log | Yes, 2 of 5 tests fail |
+| regfile | reset does nothing | not recorded in log | Yes, 2 of 5 tests fail |
+| regfile | `BYPASS` ignored | `BYPASS=1` | Yes, 2 of 5 tests fail |
+| mmio_top | write counter adds 2 | 8 × 2, bypass 0 | Yes, 1 of 10 tests fail |
+| mmio_top | offset 3 treated as mapped | 8 × 2, bypass 0 | Yes, 1 of 10 tests fail |
+| mmio_top | scan gate removed | 8 × 2, bypass 0 | Yes, 1 of 10 tests fail |
+| mmio_top | bypass ignored | 8 × 2, bypass 1 | Yes, 1 of 10 tests fail |
 
 ---
 
@@ -403,9 +403,9 @@ Register-Bus/
 | Toolchain in a pinned Docker image, example design (gcd) taken to GDS | Done |
 | Metric key names checked on the example design | Done |
 | `regfile.v` written | Done |
-| `regfile` tests | Running, mutation checks pending |
+| `regfile` tests | Passing at depth 8; 3 of 3 mutations caught |
 | `mmio_top.v` | Done |
-| `mmio_top` tests | 10 of 10 passing on the bus design; mutation checks pending |
+| `mmio_top` tests | 10 of 10 passing at depth 8; 4 of 4 mutations caught |
 | DRC and LVS for 8 × 1 core and bus | Done (DRC 0 violations, LVS match) |
 | Layout screenshots for 8 × 1 core and bus | Done (`docs/layouts/`) |
 | Clock period chosen from probes | Open (4.5 ns recommended, not verified) |
