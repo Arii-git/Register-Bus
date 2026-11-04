@@ -100,3 +100,11 @@ Other runs in runs/, not in sweep.csv:
 ## Changing the clock period later
 
 The full 24-point sweep has not started, so the period can still be chosen. A different period needs a full sweep at that period, which takes 10 to 12 hours. The 4.0 ns rows above stay as a record and must not be mixed with new-period rows in the report. sweep.py skips points that already have results, so a new-period run needs --force or a new tag.
+
+## DRC and LVS (8 × 1, core and bus)
+
+Checked on 5 Nov 2026 with the sky130hd flow, depth 8, one read port.
+
+- Detailed routing: 0 violations for core and bus (logs/sky130hd/rb_<design>_d8_r1/base/5_2_route.log).
+- DRC (KLayout, sky130hd.lydrc): 0 violations for core and bus.
+- LVS (KLayout, sky130hd.lylvs): netlists match for core and bus.
