@@ -59,4 +59,4 @@ Negative slack on the largest points means the period has to be chosen with thos
 
 5. **5_bandwidth_vs_area.png:** Peak read bandwidth per unit area is highest at small depths with more ports, with 8 × 4 reaching about 18.6 Gbit/s at 11,000 µm² for the core. Core and bus points at the same depth and ports cluster together, so the bus costs area without changing bandwidth.
 
-6. **6_cell_breakdown.png:** For the bus at 4 read ports, the design is about 860 cells at 8 entries and about 2,800 at 32, split into flops, mux cells and other cells. Only 8 × 4 and 32 × 4 are shown; 64 × 4 is to be added.
+6. **6_cell_breakdown.png:** The bus at 4 read ports has 866, 2794 and 5052 cells at 8, 32 and 64 entries. Flops rise from 168 to 1064 and mux cells from 163 to 1109, and other cells make up the rest.

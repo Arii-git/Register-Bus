@@ -274,7 +274,6 @@ Written before the results and kept up to date as runs finish.
 - **One tool version.** The results compare designs against each other under one flow setting.
 - **No signoff and no tapeout.** DRC and LVS status will be reported exactly as the flow reports it, or as "not run". Nothing here has been fabricated.
 - **Clock period not chosen.** Flow runs so far use a placeholder period. The choice waits on the 2.5 ns and 6.0 ns probes.
-- **Plot 6 has two depths.** The cell breakdown shows 8 × 4 and 32 × 4 only, until the 64 × 4 bar is added.
 - **Failed or odd runs:** none yet. Each one is listed here as it happens.
 
 ---
@@ -400,7 +399,7 @@ Register-Bus/
 | First flow runs at a placeholder period | Done for 8 entries, 1 read port (core and bus); clock period not chosen yet |
 | Sweep collected into one CSV | Partly done; full 24-point sweep still to run |
 | Cost model fitted and tested on held-back runs | Partly done; validation errors 0.5% to 5.1% |
-| 6 plots with captions | Done; plot 6 needs the 64 × 4 bar |
+| 6 plots with captions | Done |
 | Report (4 to 6 pages) | Not started |
 
 **After the core work, in order:** the cost of the same-cycle bypass, a registered read output, a second platform (nangate45), one formal property with SymbiYosys, and GitHub Actions running the tests on every push.
