@@ -46,3 +46,17 @@ Negative slack on the largest points means the period has to be chosen with thos
 - One run per point, one period, one platform.
 - Power is relative (default activity).
 - Timing is not closed at 128 x 2 or 64 x 4.
+
+## Plots
+- 
+1. **1_area_vs_entries.png:** Cell area grows with depth and read ports, from about 7,000 µm² at 8 × 1 to about 44,000 µm² at 32 × 4 for the core. The bus interface adds area at every point, with the largest gap at 32 entries.
+
+2. **2_period_vs_entries.png:** The core's achievable period rises with depth, from about 3.43 ns at 8 entries to about 4.09 ns at 32 × 4. With the bus, the period dips at 16 entries and recovers at 32.
+
+3. **3_power_vs_entries.png:** Total power rises with depth and read ports, reaching about 15.5 mW for the core and about 16.5 mW for the bus at 32 × 4. The bus adds little power at 8 entries and more at 32.
+
+4. **4_interface_overhead.png:** Absolute bus overhead is about 2,000 to 4,300 µm², growing with depth and ports. As a share of the core, it falls from about 32% at 8 × 1 to about 8 to 10% at 32 entries.
+
+5. **5_bandwidth_vs_area.png:** Peak read bandwidth per unit area is highest at small depths with more ports, with 8 × 4 reaching about 18.6 Gbit/s at 11,000 µm² for the core. Core and bus points at the same depth and ports cluster together, so the bus costs area without changing bandwidth.
+
+6. **6_cell_breakdown.png:** For the bus at 4 read ports, the design is about 860 cells at 8 entries and about 2,800 at 32, split into flops, mux cells and other cells. Only 8 × 4 and 32 × 4 are shown; 64 × 4 is to be added.
