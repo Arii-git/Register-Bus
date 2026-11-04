@@ -6,7 +6,5 @@
  "bypass": 0,
  "period_ns": 4.0,
  "util": 40,
- "tag": "",
- "runtime_s": 45.3,
- "status": "ok"
+ "tag": ""
 }

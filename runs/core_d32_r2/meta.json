@@ -1,0 +1,12 @@
+{
+ "id": "core_d32_r2",
+ "kind": "core",
+ "depth": 32,
+ "nread": 2,
+ "bypass": 0,
+ "period_ns": 4.0,
+ "util": 40,
+ "tag": "",
+ "runtime_s": 125.2,
+ "status": "ok"
+}

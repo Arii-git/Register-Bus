@@ -1,0 +1,12 @@
+{
+ "id": "bus_d32_r2",
+ "kind": "bus",
+ "depth": 32,
+ "nread": 2,
+ "bypass": 0,
+ "period_ns": 4.0,
+ "util": 40,
+ "tag": "",
+ "runtime_s": 151.0,
+ "status": "ok"
+}

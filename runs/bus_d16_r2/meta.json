@@ -1,0 +1,12 @@
+{
+ "id": "bus_d16_r2",
+ "kind": "bus",
+ "depth": 16,
+ "nread": 2,
+ "bypass": 0,
+ "period_ns": 4.0,
+ "util": 40,
+ "tag": "",
+ "runtime_s": 83.1,
+ "status": "ok"
+}

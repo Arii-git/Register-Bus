@@ -1,0 +1,10 @@
+{
+ "id": "core_d16_r2",
+ "kind": "core",
+ "depth": 16,
+ "nread": 2,
+ "bypass": 0,
+ "period_ns": 4.0,
+ "util": 40,
+ "tag": ""
+}
