@@ -1,0 +1,12 @@
+{
+ "id": "bus_d64_r4_p4",
+ "kind": "bus",
+ "depth": 64,
+ "nread": 4,
+ "bypass": 0,
+ "period_ns": 4.0,
+ "util": 40,
+ "tag": "_p4",
+ "runtime_s": 667.1,
+ "status": "ok"
+}

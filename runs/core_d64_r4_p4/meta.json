@@ -1,0 +1,12 @@
+{
+ "id": "core_d64_r4_p4",
+ "kind": "core",
+ "depth": 64,
+ "nread": 4,
+ "bypass": 0,
+ "period_ns": 4.0,
+ "util": 40,
+ "tag": "_p4",
+ "runtime_s": 588.0,
+ "status": "ok"
+}
