@@ -60,3 +60,10 @@ Negative slack on the largest points means the period has to be chosen with thos
 5. **5_bandwidth_vs_area.png:** Peak read bandwidth per unit area is highest at small depths with more ports, with 8 × 4 reaching about 18.6 Gbit/s at 11,000 µm² for the core. Core and bus points at the same depth and ports cluster together, so the bus costs area without changing bandwidth.
 
 6. **6_cell_breakdown.png:** The bus at 4 read ports has 866, 2794 and 5052 cells at 8, 32 and 64 entries. Flops rise from 168 to 1064 and mux cells from 163 to 1109, and other cells make up the rest.
+
+## Layouts (8 × 1)
+
+Placed and routed layouts from OpenROAD GUI (6_final, sky130hd, depth 8, one read port).
+
+- Core: `docs/layouts/core_8x1_layout.png`
+- Bus: `docs/layouts/bus_8x1_layout.png`
