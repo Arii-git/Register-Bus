@@ -10,8 +10,8 @@ One line per function in `scripts/sweep.py`.
 - `run_one(args, kind, d, r, b)`: writes the inputs, skips finished points unless `--force`, runs the flow into `make.log`, then adds runtime and status to `meta.json`.
 - `main()`: reads the arguments (`--period`, `--only`, `--tag`, `--force`, `--dry`, `--extra`, `--jobs`), builds the point list, checks that openroad and yosys are on PATH, and runs the points.
 
-## Known issues (not fixed yet)
+## Known issues
 
-- **`meta.json` is overwritten on skip.** `write_inputs` runs before the `done()` check, so a skipped run's `meta.json` takes the current `--period`. A finished 4.0 ns run can end up recording 2.5 or 6.0 ns. Fix: write `meta.json` only after the skip check.
 - **Period probes collide without `--tag`.** `run_id` does not include the period, so a probe without `--tag` reuses the 4.0 ns folder and is skipped. Always pass `--tag _p25` or `--tag _p60` for probes.
-- **`--dry` writes files.** `write_inputs` runs before the dry-run check, so `--dry` still writes into `runs/`.
+
+Fixed in c7c92a4: `meta.json` is written only for real runs, and `--dry` writes nothing.

@@ -274,6 +274,7 @@ Written before the results and kept up to date as runs finish.
 - **One tool version.** The results compare designs against each other under one flow setting.
 - **No signoff and no tapeout.** DRC and LVS status will be reported exactly as the flow reports it, or as "not run". Nothing here has been fabricated.
 - **Clock period not chosen.** Flow runs so far use a placeholder period. The choice waits on the 2.5 ns and 6.0 ns probes.
+- **Timing misses at 32 × 4.** Both designs at 32 entries and 4 read ports have negative slack at the 4.0 ns target (core -0.09 ns, bus -0.05 ns).
 - **Failed or odd runs:** none yet. Each one is listed here as it happens.
 
 ---

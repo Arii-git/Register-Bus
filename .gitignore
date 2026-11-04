@@ -8,3 +8,4 @@ results.xml
 .venv/
 runs/*/make.log
 nohup.out
+runs/
