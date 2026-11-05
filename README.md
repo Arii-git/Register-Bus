@@ -20,12 +20,12 @@ A study that measures the area, timing and power of a parameterised flip-flop re
 
 | Question | Answer |
 | --- | --- |
-| Interface overhead, smallest to largest size (% of core cell area) | +32.2% at 8 x 1, 8.3% to 14.5% at 32 entries, 4.7% at the 64 x 4 probe. Absolute overhead grows from about 2,000 to 4,300 um2 (`docs/results.md`) |
-| Best peak bandwidth per 1000 µm², and the configuration that gives it | *pending* |
-| Cost model error on the four held-back configurations | 0.5% to 5.1% (16 x 3 and 128 x 2, core and bus) |
-| Worst path in the bus design | `addr[0]` to `rdata[14]` at 8 x 1 with 0.03 ns slack; `addr[0]` to `rdata` at 64 x 4 |
+| Interface overhead, smallest to largest size (% of core cell area) | +32.2% at 8 × 1, 8.3% to 14.5% at 32 entries, 4.7% at the 64 × 4 probe. Absolute overhead grows from about 2,000 to 4,300 µm² (`docs/results.md`) |
+| Bandwidth per area with 4 read ports versus 1 | 2.5 to 2.8 times (H5: direction supported, my guess of 1.5 to 2.5 times was too low) |
+| Cost model error on the four held-back configurations | 0.5% to 5.1% (16 × 3 and 128 × 2, core and bus) |
+| Worst path in the bus design | `addr[0]` to `rdata[14]` at 8 × 1 with 0.03 ns slack; `addr[0]` to `rdata` at 64 × 4 |
 
-Every number that fills this table will come from `results/sweep.csv`, which is generated from the flow's own report files.
+Every number in this table comes from `results/sweep.csv`, which is generated from the flow's own report files.
 
 ---
 
@@ -83,6 +83,7 @@ Two top-level designs share one RTL source. Size is set by macros (`P_DEPTH`, `P
 
 Figures: [block diagram](docs/figures/block_diagram.png) and [method flowchart](docs/figures/method_flow.png). Yosys schematics and the cell table are described in [`docs/synthesis.md`](docs/synthesis.md).
 
+
 ### `rtl/regfile.v` (core-only design)
 
 - `DEPTH` entries of 16 bits, stored in flip-flops.
@@ -127,22 +128,22 @@ Testbenches are written in Python with [cocotb](https://www.cocotb.org/) (1.9.x,
 
 | Suite | Tests | What they cover | State |
 | --- | --- | --- | --- |
-| `tb/test_regfile.py` | 5 | Reset, write then read on every address, same-cycle read of the written address, no write when `we` is low, random traffic against the model | Passing at depth 8; 3 of 3 mutations caught |
-| `tb/test_mmio.py` | 10 planned, plus 2 of my own | Reset state, DATA read and write, CTRL, unmapped access and `err`, write counter and `CLEAR`, INPUT register, idle bus reads 0, scan ports, scan with bypass, random bus traffic | 10 of 10 passing on the bus design |
+| `tb/test_regfile.py` | 5 | Reset, write then read on every address, same-cycle read of the written address, no write when `we` is low, random traffic against the model | 5 of 5 passing in all settings |
+| `tb/test_mmio.py` | 10 | Reset state, DATA read and write, CTRL, unmapped access and `err`, write counter and `CLEAR`, INPUT register, idle bus reads 0, scan ports, scan with bypass, random bus traffic | 10 of 10 passing on the bus design |
 
 `make test-all` runs both designs over 4 sizes × 3 read-port counts × 2 bypass settings, which is 48 configurations.
 
-**Mutation checks.** Each suite was run against deliberately broken RTL, one break at a time. At least one test must fail for each break, and all seven breaks were caught. Some breaks can only be seen in some configurations, so the table says where each one is run.
+**Mutation checks.** Each suite was run against deliberately broken RTL, one break at a time, and at least one test must fail for each break. Some breaks can only be seen in some configurations, so the table says where each one is run.
 
 | Design | Break | Run with | Caught |
 | --- | --- | --- | --- |
-| regfile | write ignores `we` | not recorded in log | Yes, 2 of 5 tests fail |
-| regfile | reset does nothing | not recorded in log | Yes, 2 of 5 tests fail |
-| regfile | `BYPASS` ignored | `BYPASS=1` | Yes, 2 of 5 tests fail |
-| mmio_top | write counter adds 2 | 8 × 2, bypass 0 | Yes, 1 of 10 tests fail |
-| mmio_top | offset 3 treated as mapped | 8 × 2, bypass 0 | Yes, 1 of 10 tests fail |
-| mmio_top | scan gate removed | 8 × 2, bypass 0 | Yes, 1 of 10 tests fail |
-| mmio_top | bypass ignored | 8 × 2, bypass 1 | Yes, 1 of 10 tests fail |
+| regfile | write ignores `we` | any | yes (`log/mutations.md`) |
+| regfile | reset does nothing | any | yes (`log/mutations.md`) |
+| regfile | `BYPASS` ignored | `BYPASS=1` | yes (`log/mutations.md`) |
+| mmio_top | write counter adds 2 | any | yes (`log/mutations_bus.md`) |
+| mmio_top | offset 3 treated as mapped | any | yes (`log/mutations_bus.md`) |
+| mmio_top | scan gate removed | `NREAD ≥ 2` | yes (`log/mutations_bus.md`) |
+| mmio_top | bypass ignored | `BYPASS=1` | yes (`log/mutations_bus.md`) |
 
 ---
 
@@ -177,7 +178,7 @@ That gives 24 grid runs. Four more runs are held back to test the cost model: 16
 
 | Metric | Definition | Source | Caveat |
 | --- | --- | --- | --- |
-| `area_um2` | Instance area at the end of the flow | `finish__design__instance__area` in `6_report.json` | Includes buffers added by clock tree synthesis and timing repair, so it depends on the target period. Whether tap and fill cells are counted is checked before v1.0 |
+| `area_um2` | Instance area at the end of the flow | `finish__design__instance__area` in `6_report.json` | Includes buffers added by clock tree synthesis and timing repair, so it depends on the target period. Tap cells are counted, fill cells are not |
 | `wns_ns` | Signed worst setup slack at the end of the flow | `finish__timing__setup__ws` | Can be positive. Negative means the target period is missed |
 | `period_est_ns` | Target period minus `wns_ns` | derived | For comparing designs only. See the note below |
 | `power_mw` | Total power × 1000 | `finish__power__total` | Default switching activity, so use it to rank designs only |
@@ -226,23 +227,23 @@ Each hypothesis, and a numeric prediction for it, is committed to `log/hypothese
 
 ## Results
 
-This section is filled only from `results/sweep.csv` and `results/summary.md` once the sweep has finished. Each figure will carry a caption that says what to look at.
+This section is filled only from `results/sweep.csv` and `results/summary.md`. The numbers below cover the 22 rows collected so far; the 64-entry grid points are added once they are parsed.
 
 ### Interface overhead
 
-*pending:* the 12 core and bus pairs with extra area (µm² and %), period change and power change; plot 4; verdict on H2.
+Bus overhead is +32.2% area and +19.4% power at 8×1. The percentage falls as the register file grows (8.3% to 14.5% at 32 entries, 4.7% at the 64×4 probe) while the absolute overhead rises from about 2,000 to 4,300 µm². H2 is only partly supported. The full table of pairs is in `docs/results.md`. *Still pending:* plot 4 and the 64×1 and 64×2 pairs.
 
 ### Bandwidth per area
 
-*pending:* plot 5; the best entries and ports combination for each design; verdict on H5. If the best point sits on the edge of the grid, the real optimum may lie outside it, and the text will say so.
+Bandwidth per area at 4 read ports is 2.5 to 2.8 times the 1-port value, against my guess of 1.5 to 2.5 times. H5: direction supported, size missed. *Still pending:* plot 5 and the best entries and ports combination for each design. If the best point sits on the edge of the grid, the real optimum may lie outside it, and the text will say so.
 
 ### Cost model on unseen points
 
-*pending:* coefficients, R², error at 64 entries, interpolation and extrapolation errors on the held-back runs.
+The model fits the grid within 7.0%. On the four held-back configurations (16×3 and 128×2, core and bus) the error is 0.5% to 5.1%, and that includes the 128×2 points outside the fitted range. H1 is supported. *Still pending:* coefficients and R² in this section, and the error at 64 entries.
 
 ### What goes critical
 
-*pending:* worst path at bus 8×1, 64×1 and 64×4 (start point, end point, slack, cell types on the path), GUI screenshots, verdict on H3.
+At bus 8×1 the worst path runs from `addr[0]` to `rdata[14]` through the decode and read mux, with +0.03 ns slack. At bus 64×4 it starts at `addr[0]` and ends at `rdata`, with −0.24 ns slack. H3 is supported at both. *Still pending:* bus 64×1, cell types on each path and GUI screenshots of the path.
 
 ### Physical checks and layouts (8 × 1)
 
@@ -366,7 +367,7 @@ rf make test-all    # 48 configurations, ends with ALL PASS
 **3. Run the sweep and regenerate every result**
 
 ```bash
-rf make sweep PERIOD=<value from log/period.md>   # one run at a time
+rf make sweep PERIOD=4.0                          # one run at a time (reason in log/period.md)
 rf make parse                                     # writes results/sweep.csv
 rf make analyse                                   # writes results/plots/ and results/summary.md
 ```
@@ -407,9 +408,9 @@ Register-Bus/
 | Toolchain in a pinned Docker image, example design (gcd) taken to GDS | Done |
 | Metric key names checked on the example design | Done |
 | `regfile.v` written | Done |
-| `regfile` tests | Passing at depth 8; 3 of 3 mutations caught |
+| `regfile` tests | Passing in all settings; 3 of 3 mutation checks caught |
 | `mmio_top.v` | Done |
-| `mmio_top` tests | 10 of 10 passing at depth 8; 4 of 4 mutations caught |
+| `mmio_top` tests | 10 of 10 passing on the bus design; 4 of 4 mutation checks caught |
 | DRC and LVS for 8 × 1 core and bus | Done (DRC 0 violations, LVS match) |
 | Block diagram and method flowchart | Done (`docs/figures/`) |
 | Synthesis table and Yosys schematics | Done (`docs/synthesis.md`, `docs/figures/`) |
