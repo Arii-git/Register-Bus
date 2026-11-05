@@ -1,0 +1,38 @@
+digraph "mmio_top" {
+label="mmio_top";
+rankdir="LR";
+remincross=true;
+n1 [ shape=octagon, label="addr[4]", color="black", fontcolor="black"];
+n2 [ shape=octagon, label="addr[3]", color="black", fontcolor="black"];
+n3 [ shape=octagon, label="addr[1]", color="black", fontcolor="black"];
+n4 [ shape=octagon, label="addr[0]", color="black", fontcolor="black"];
+n5 [ shape=diamond, label="_186_", color="black", fontcolor="black"];
+n6 [ shape=diamond, label="_185_", color="black", fontcolor="black"];
+n7 [ shape=diamond, label="_184_", color="black", fontcolor="black"];
+n8 [ shape=diamond, label="_005_", color="black", fontcolor="black"];
+n9 [ shape=octagon, label="err", color="black", fontcolor="black"];
+n10 [ shape=octagon, label="sel", color="black", fontcolor="black"];
+v0 [ label="_443_" ];
+c15 [ shape=record, label="{{<p11> A|<p12> B}|_899_\nsky130_fd_sc_hd__ha_1|{<p13> COUT|<p14> SUM}}",  ];
+c18 [ shape=record, label="{{<p11> A|<p12> B|<p16> C_N}|_448_\nsky130_fd_sc_hd__nor3b_1|{<p17> Y}}",  ];
+c20 [ shape=record, label="{{<p11> A}|_447_\nsky130_fd_sc_hd__clkbuf_1|{<p19> X}}",  ];
+c21 [ shape=record, label="{{<p11> A|<p12> B}|_446_\nsky130_fd_sc_hd__nor2_1|{<p17> Y}}",  ];
+c22 [ shape=record, label="{{<p11> A|<p12> B|<p16> C_N}|_445_\nsky130_fd_sc_hd__nor3b_1|{<p17> Y}}",  ];
+n1:e -> c21:p11:w [color="black", fontcolor="black", label=""];
+n1:e -> c22:p12:w [color="black", fontcolor="black", label=""];
+n10:e -> c20:p11:w [color="black", fontcolor="black", label=""];
+n2:e -> c21:p12:w [color="black", fontcolor="black", label=""];
+n2:e -> c22:p16:w [color="black", fontcolor="black", label=""];
+n3:e -> c15:p12:w [color="black", fontcolor="black", label=""];
+n4:e -> c15:p11:w [color="black", fontcolor="black", label=""];
+c20:p19:e -> n5:w [color="black", fontcolor="black", label=""];
+n5:e -> c18:p16:w [color="black", fontcolor="black", label=""];
+c21:p17:e -> n6:w [color="black", fontcolor="black", label=""];
+n6:e -> c18:p12:w [color="black", fontcolor="black", label=""];
+c22:p17:e -> n7:w [color="black", fontcolor="black", label=""];
+n7:e -> c18:p11:w [color="black", fontcolor="black", label=""];
+c15:p13:e -> n8:w [color="black", fontcolor="black", label=""];
+n8:e -> c22:p11:w [color="black", fontcolor="black", label=""];
+c18:p17:e -> n9:w [color="black", fontcolor="black", label=""];
+c15:p14:e -> v0:w [color="black", fontcolor="black", label=""];
+}
