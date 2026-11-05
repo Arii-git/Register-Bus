@@ -10,7 +10,7 @@ A study that measures the area, timing and power of a parameterised flip-flop re
 ![hdl](https://img.shields.io/badge/HDL-Verilog-lightgrey)
 ![tests](https://img.shields.io/badge/tests-cocotb%20%2B%20Icarus-lightgrey)
 
-> **Status, 5 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. The register file RTL is written and its tests run. The bus wrapper is written and its tests run. For the 8 × 1 core and bus designs, DRC is clean (0 violations), LVS netlists match, and detailed routing ends with 0 violations; the layout screenshots are in `docs/layouts/`. The 24-point sweep has not started, because the clock period is still open. Target for v1.0 is 14 Nov 2026.
+> **Status, 5 Nov 2026.** The toolchain runs in a pinned Docker image and the example design has been taken to GDS. The register file RTL is written and its tests run. The bus wrapper is written and its tests run. For the 8 × 1 core and bus designs, DRC is clean (0 violations), LVS netlists match, and detailed routing ends with 0 violations; the layout screenshots are in `docs/layouts/`. The clock period is fixed at 4.0 ns for every run (evidence in `log/period.md`). The 18 grid points at 8 to 32 entries and the 4 held-back runs are in `results/sweep.csv`, and the 64-entry grid points are added as they finish. The block diagram, method flowchart and Yosys schematics are in `docs/figures/`, and the synthesis table is in `docs/synthesis.md`. Target for v1.0 is 14 Nov 2026.
 
 **Quick start:** `rf make test` (setup in [Reproduce](#reproduce)).
 
@@ -20,10 +20,10 @@ A study that measures the area, timing and power of a parameterised flip-flop re
 
 | Question | Answer |
 | --- | --- |
-| Interface overhead, smallest to largest size (% of core cell area) | *pending* |
+| Interface overhead, smallest to largest size (% of core cell area) | +32.2% at 8 x 1, 8.3% to 14.5% at 32 entries, 4.7% at the 64 x 4 probe. Absolute overhead grows from about 2,000 to 4,300 um2 (`docs/results.md`) |
 | Best peak bandwidth per 1000 µm², and the configuration that gives it | *pending* |
-| Cost model error on the four held-back configurations | *pending* |
-| Worst path in the bus design | *pending* |
+| Cost model error on the four held-back configurations | 0.5% to 5.1% (16 x 3 and 128 x 2, core and bus) |
+| Worst path in the bus design | `addr[0]` to `rdata[14]` at 8 x 1 with 0.03 ns slack; `addr[0]` to `rdata` at 64 x 4 |
 
 Every number that fills this table will come from `results/sweep.csv`, which is generated from the flow's own report files.
 
@@ -80,6 +80,8 @@ Two top-level designs share one RTL source. Size is set by macros (`P_DEPTH`, `P
   scan_addr ---->|        ports 1..NREAD-1 ---> scan_data           |
                  +--------------------------------------------------+
 ```
+
+Figures: [block diagram](docs/figures/block_diagram.png) and [method flowchart](docs/figures/method_flow.png). Yosys schematics and the cell table are described in [`docs/synthesis.md`](docs/synthesis.md).
 
 ### `rtl/regfile.v` (core-only design)
 
@@ -146,6 +148,8 @@ Testbenches are written in Python with [cocotb](https://www.cocotb.org/) (1.9.x,
 
 ## Method
 
+![Method flow](docs/figures/method_flow.png)
+
 **Sweep**
 
 | Parameter | Values |
@@ -165,7 +169,7 @@ That gives 24 grid runs. Four more runs are held back to test the cost model: 16
 | Platform | sky130hd, the platform's default corner (to be named from the platform config before v1.0) |
 | `CORE_UTILIZATION` | 40 |
 | `PLACE_DENSITY_LB_ADDON` | 0.20 |
-| Clock period | One target for the whole sweep, chosen from probe runs and recorded with its evidence in `log/period.md`. Still open: 4.5 ns is recommended but not yet verified |
+| Clock period | 4.0 ns for every run. The probe table, the decision rule and the runs that miss it are in `log/period.md` |
 | Input and output delay | 20% of the period each, so the combinational bus read path is a timed path |
 | Tools | One Docker image, versions in [Reproduce](#reproduce) |
 
@@ -212,11 +216,11 @@ Each hypothesis, and a numeric prediction for it, is committed to `log/hypothese
 
 | # | Hypothesis | Disproved if | Verdict |
 | --- | --- | --- | --- |
-| H1 | Area of each design fits `A = c0 + c1·D + c2·R·D` | Largest relative residual over the 12 grid points is above 10% | *pending* |
-| H2 | Bus overhead as a percentage of core area falls as entries grow, at every `NREAD`; the absolute overhead in µm² stays roughly flat | Overhead % at 64 entries is not lower than at 8 for any `NREAD` | *pending* |
-| H3 | The bus design's critical path runs from `addr` to `rdata` through decode and the read mux | The timing report shows a different start or end point | *pending* |
-| H4 | Power ranks the 24 runs in nearly the same order as area | Spearman rank correlation between power and area is below 0.9 (threshold is my choice) | *pending* |
-| H5 | Adding read ports raises peak bandwidth faster than it raises area | `bw_per_kum2` falls from `NREAD = 1` to `NREAD = 4` at any `DEPTH` | *pending* |
+| H1 | Area of each design fits `A = c0 + c1·D + c2·R·D` | Largest relative residual over the 12 grid points is above 10% | Supported: largest residual 7.0%, validation error 0.5% to 5.1% |
+| H2 | Bus overhead as a percentage of core area falls as entries grow, at every `NREAD`; the absolute overhead in µm² stays roughly flat | Overhead % at 64 entries is not lower than at 8 for any `NREAD` | Partly: percentage falls at every port count, absolute overhead grows from about 2,000 to 4,300 um2 |
+| H3 | The bus design's critical path runs from `addr` to `rdata` through decode and the read mux | The timing report shows a different start or end point | Supported at 8 x 1 and 64 x 4 (worst path starts at `addr[0]`, ends at `rdata`) |
+| H4 | Power ranks the 24 runs in nearly the same order as area | Spearman rank correlation between power and area is below 0.9 (threshold is my choice) | Supported: Spearman 0.998 |
+| H5 | Adding read ports raises peak bandwidth faster than it raises area | `bw_per_kum2` falls from `NREAD = 1` to `NREAD = 4` at any `DEPTH` | Direction supported: bandwidth per area at 4 ports is 2.5 to 2.8 times the 1-port value |
 
 ---
 
@@ -388,7 +392,7 @@ Register-Bus/
   scripts/    sweep.py, parse.py, keys.py, analyse.py
   runs/       one folder per sweep point: config.mk and copied reports (make.log stays local)
   results/    sweep.csv, summary.md, plots/
-  docs/       spec, block diagram, flow notes, critical paths, layouts/, screenshots
+  docs/       spec, flow notes, results.md, synthesis.md, figures/ (block diagram, method flow, Yosys schematics), layouts/, screenshots
   log/        daily logs, versions.md, keys.md, hypotheses.md, predictions.md, period.md
   docker/     Dockerfile and the rf wrapper
   Makefile    test, test-all, sweep, parse, analyse
@@ -407,11 +411,13 @@ Register-Bus/
 | `mmio_top.v` | Done |
 | `mmio_top` tests | 10 of 10 passing at depth 8; 4 of 4 mutations caught |
 | DRC and LVS for 8 × 1 core and bus | Done (DRC 0 violations, LVS match) |
+| Block diagram and method flowchart | Done (`docs/figures/`) |
+| Synthesis table and Yosys schematics | Done (`docs/synthesis.md`, `docs/figures/`) |
 | Layout screenshots for 8 × 1 core and bus | Done (`docs/layouts/`) |
-| Clock period chosen from probes | Open (4.5 ns recommended, not verified) |
-| 24-point sweep collected into one CSV | Not started |
-| Cost model fitted and tested on 4 held-back runs | Not started |
-| 6 plots from my own data | Plot 6 done; plots 1 to 5 wait on the sweep |
+| Clock period chosen from probes | Done: 4.0 ns for every run (`log/period.md`) |
+| 24-point sweep collected into one CSV | In progress: 22 rows collected, 64-entry grid points being added |
+| Cost model fitted and tested on 4 held-back runs | Done on the 18 grid points: error 0.5% to 5.1% (`results/summary.md`) |
+| 6 plots from my own data | Done on the 22 rows collected so far; regenerate after the 64-entry points |
 | Report (4 to 6 pages) | Not started |
 
 **After the core work, in order:** the cost of the same-cycle bypass, a registered read output, a second platform (nangate45), one formal property with SymbiYosys, and GitHub Actions running the tests on every push.
