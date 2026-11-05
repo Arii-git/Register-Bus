@@ -1,0 +1,39 @@
+digraph F {
+  rankdir=TB; nodesep=0.4; ranksep=0.32;
+  graph [fontname="Helvetica", bgcolor="white", pad=0.3, label="Register-Bus: method flow (RTL to measured PPA and a tested cost model)", labelloc=t, fontsize=15];
+  node [fontname="Helvetica", fontsize=11, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#444444", width=4.2];
+  edge [fontname="Helvetica", fontsize=9, color="#555555", arrowsize=0.7];
+
+  start [label="Start", shape=ellipse, fillcolor="#eeeeee", width=1.2];
+  spec  [label=<<b>1. Specification</b><br/><font point-size="9">address map, bus rules, flop counts (docs/spec.md)</font>>, fillcolor="#e8f0fe"];
+  rtl   [label=<<b>2. RTL in Verilog</b><br/><font point-size="9">rtl/regfile.v (core), rtl/mmio_top.v (bus)<br/>size set by macros P_DEPTH, P_NREAD, P_BYPASS</font>>, fillcolor="#e8f0fe"];
+  sim   [label=<<b>3. Simulation: cocotb + Icarus Verilog</b><br/><font point-size="9">5 regfile tests, 10 bus tests, 24 settings each<br/>waveforms in GTKWave</font>>, fillcolor="#e6f4ea"];
+  pass  [label="All tests pass?", shape=diamond, style="filled", fillcolor="#fff4e5", width=2.2, height=0.9];
+  mut   [label=<<b>4. Mutation checks</b><br/><font point-size="9">break the RTL on purpose, one break at a time<br/>7 of 7 breaks caught</font>>, fillcolor="#e6f4ea"];
+  hyp   [label=<<b>5. Hypotheses H1 to H5 committed to git</b><br/><font point-size="9">written with numbers before the sweep results were opened</font>>, fillcolor="#fff4e5"];
+  per   [label=<<b>6. Clock period: one target for every run</b><br/><font point-size="9">4.0 ns, checked with probes: 8 x 1 at 2.5 and 6.0 ns,<br/>64 x 4 at 4.0 ns (log/period.md)</font>>, fillcolor="#fff4e5"];
+  sweep [label=<<b>7. scripts/sweep.py</b><br/><font point-size="9">writes config.mk, constraint.sdc, meta.json per point<br/>core and bus at 8, 16, 32, 64 entries x 1, 2, 4 read ports</font>>, fillcolor="#f3e8fd"];
+  orfs  [label=<<b>8. OpenROAD-flow-scripts, sky130hd (Docker image rf-tools)</b><br/><font point-size="9">Yosys synthesis, floorplan (util 40%), placement,<br/>CTS, global and detailed routing, finish (GDS)</font>>, fillcolor="#f3e8fd"];
+  ok    [label="Run finished?", shape=diamond, style="filled", fillcolor="#fff4e5", width=2.2, height=0.9];
+  fail  [label=<<font point-size="9">copy log to log/failed/,<br/>fix the cause, rerun with --force</font>>, fillcolor="#fde8e8", width=2.2];
+  parse [label=<<b>9. scripts/parse.py</b><br/><font point-size="9">6_report.json + synth_stat.txt into results/sweep.csv<br/>area, setup WNS, power, flops, mux cells</font>>, fillcolor="#e8f0fe"];
+  ana   [label=<<b>10. scripts/analyse.py</b><br/><font point-size="9">6 plots, interface overhead, bandwidth per area<br/>fit A = c0 + c1·D + c2·R·D on the grid points</font>>, fillcolor="#e8f0fe"];
+  pred  [label=<<b>11. Predictions committed, then validation runs</b><br/><font point-size="9">16 x 3 (interpolation) and 128 x 2 (extrapolation)<br/>error = (predicted - measured) / measured</font>>, fillcolor="#fff4e5"];
+  phys  [label=<<b>12. Physical checks</b><br/><font point-size="9">DRC (KLayout, sky130 deck) and LVS on 8 x 1 core and bus<br/>critical path from 6_finish.rpt, layouts in OpenROAD GUI</font>>, fillcolor="#e6f4ea"];
+  rep   [label=<<b>13. Results and hypothesis verdicts</b><br/><font point-size="9">docs/results.md, README, report</font>>, fillcolor="#e8f0fe"];
+  end   [label="End", shape=ellipse, fillcolor="#eeeeee", width=1.2];
+
+  fixrtl [label=<<font point-size="9">fix RTL<br/>or test</font>>, fillcolor="#fde8e8", width=1.2];
+
+  start -> spec -> rtl -> sim -> pass;
+  pass -> mut [label=" yes"];
+  pass -> fixrtl [label=" no"];
+  fixrtl -> rtl [constraint=false];
+  mut -> hyp -> per -> sweep -> orfs -> ok;
+  ok -> parse [label=" yes"];
+  ok -> fail [label=" no"];
+  fail -> orfs [constraint=false];
+  parse -> ana -> pred -> phys -> rep -> end;
+  {rank=same; pass; fixrtl;}
+  {rank=same; ok; fail;}
+}

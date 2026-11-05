@@ -1,0 +1,50 @@
+digraph G {
+  rankdir=LR; splines=spline; nodesep=0.35; ranksep=0.7;
+  graph [fontname="Helvetica", fontsize=12, bgcolor="white", pad=0.3,
+         label="mmio_top: register file behind a zero-wait-state MMIO bus slave (DEPTH x 16 bit, NREAD read ports, AW = log2 DEPTH)", labelloc=t, fontsize=15];
+  node  [fontname="Helvetica", fontsize=11, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#444444", penwidth=1.2];
+  edge  [fontname="Helvetica", fontsize=9, color="#555555", arrowsize=0.7];
+
+  // inputs
+  subgraph cluster_in { label="Bus side (CPU)"; style="dashed"; color="#999999"; fontsize=11;
+    sel   [label="sel", shape=plaintext, style=""];
+    we    [label="we", shape=plaintext, style=""];
+    addr  [label="addr[AW+1:0]", shape=plaintext, style=""];
+    wdata [label="wdata[15:0]", shape=plaintext, style=""];
+  }
+  in_port   [label="in_port[15:0]", shape=plaintext, style=""];
+  scan_addr [label="scan_addr\n(NREAD-1 ports)", shape=plaintext, style=""];
+  clkrst    [label="clk, rst\n(to every flop)", shape=plaintext, style="", fontcolor="#777777"];
+
+  decode [label=<<b>Address decode</b><br/><font point-size="9">region = addr[AW+1:AW]<br/>off = addr[1:0]<br/>is_data = (region == 0)<br/>is_ctrl = (region == 1)<br/>mapped = is_data | (is_ctrl &amp; off != 3)</font>>, fillcolor="#e8f0fe"];
+  errg   [label=<<b>err</b> = sel &amp; ~mapped>, fillcolor="#fde8e8"];
+  wen    [label=<<b>Write enables</b><br/><font point-size="9">wr_data = sel &amp; we &amp; is_data<br/>wr_ctrl = sel &amp; we &amp; is_ctrl &amp; off==0<br/>clear = wr_ctrl &amp; wdata[15]</font>>, fillcolor="#e8f0fe"];
+
+  rf [label=<<b>regfile u_rf</b><br/><font point-size="9">DEPTH x 16-bit flip-flops<br/>1 synchronous write port<br/>NREAD combinational read ports<br/>port 0: addr[AW-1:0]  |  ports 1..: scan_addr</font>>, fillcolor="#e6f4ea", penwidth=2];
+
+  ctrl   [label=<<b>CTRL</b> (RW)<br/><font point-size="9">ctrl_q, 15 bits stored<br/>bit 0 SCAN_EN, bit 15 CLEAR</font>>, fillcolor="#fff4e5"];
+  status [label=<<b>STATUS</b> (RO)<br/><font point-size="9">wr_cnt[7:0] + err_sticky</font>>, fillcolor="#fff4e5"];
+  inreg  [label=<<b>INPUT</b> (RO)<br/><font point-size="9">in_q, 16 bits</font>>, fillcolor="#fff4e5"];
+
+  rmux [label=<<b>Response mux</b><br/><font point-size="9">DATA / CTRL / STATUS / INPUT / 0<br/>selected by region and off</font>>, fillcolor="#f3e8fd"];
+  gate [label=<<b>sel gate</b><br/><font point-size="9">rdata = sel ? rd_mux : 0</font>>, fillcolor="#f3e8fd"];
+  sgate [label=<<b>Scan gate</b><br/><font point-size="9">scan_data = SCAN_EN ? ports 1.. : 0</font>>, fillcolor="#f3e8fd"];
+
+  rdata     [label="rdata[15:0]", shape=plaintext, style=""];
+  err       [label="err", shape=plaintext, style=""];
+  scan_data [label="scan_data\n(NREAD-1 x 16)", shape=plaintext, style=""];
+
+  addr -> decode; sel -> errg; decode -> errg [label="mapped"];
+  sel -> wen; we -> wen; decode -> wen [label="is_data, is_ctrl, off"]; wdata -> wen [label="bit 15"];
+  wen -> rf [label="we = wr_data"]; addr -> rf [label="waddr, raddr0"]; wdata -> rf; scan_addr -> rf;
+  wen -> ctrl [label="wr_ctrl"]; wdata -> ctrl;
+  wen -> status [label="wr_data, clear"]; errg -> status [label="err"];
+  in_port -> inreg;
+  rf -> rmux [label="read port 0"]; ctrl -> rmux; status -> rmux; inreg -> rmux; decode -> rmux [label="region, off"];
+  rmux -> gate; sel -> gate; gate -> rdata;
+  errg -> err;
+  rf -> sgate [label="read ports 1.."]; ctrl -> sgate [label="bit 0"]; sgate -> scan_data;
+  clkrst -> rf [style=dotted, arrowhead=none];
+
+  {rank=same; rdata; err; scan_data;}
+}
